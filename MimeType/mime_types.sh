@@ -1,34 +1,23 @@
 #!/bin/bash
 
-declare -a types
+declare -A types
 
 toLower() {
   echo $1 | tr '[:upper:]' '[:lower:]'
-}
-
-getType() {
-  v=types__${1}
-  echo ${!v:-UNKNOWN}
-}
-
-toType() {
-  name=`toLower $1`
-  [[ $name == *"."* ]] && type=$(echo ${name##*.}) || type=
-  mime=types[$type]
-  echo `getType $type "${types[@]}"`
 }
 
 read N
 read Q
 
 for (( i=0; i<N; i++ )); do
-    read EXT MT
-    ext=`toLower $EXT`
-    printf -v "types__${ext}" %s "$MT"
+  read EXT MT
+  ext=`toLower $EXT`
+  types[$ext]=$MT
 done
 
 for (( i=0; i<Q; i++ )); do
-    read FNAME
-    echo `toType $FNAME`
+  read FNAME
+  name=`toLower $FNAME`
+  [[ $name == *"."* ]] && type=${name##*.} || type=
+  echo ${types[$type]:-UNKNOWN}
 done
-
