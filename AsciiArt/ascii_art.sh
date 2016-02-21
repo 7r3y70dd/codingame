@@ -17,6 +17,10 @@ declare -a answers
 
 for (( i = 0; i < H; i++ )); do
   read ROW
+  if (( i == 0 )); then
+    ROW=" "$ROW
+  fi
+  echo "row:$ROW" >&2
   rows[$i]=$ROW
 done
 
@@ -27,6 +31,7 @@ done
 echo "rows-keys:${!rows[@]}, rows-values:${rows[@]}" >&2
 
 ordA=$(ord "A")
+ordZ=$(ord "Z")
 
 for (( i = 0; i < ${#T}; i++ )); do
   c=${T:$i:1}
@@ -34,8 +39,11 @@ for (( i = 0; i < ${#T}; i++ )); do
   pos=$(((ordC - ordA) * L))
   rowSize=${#rows[0]}
   
+  echo "pos:$pos, rowSize=$rowSize" >&2
+  
   if (( pos < 0 || pos > rowSize )); then
-    pos=$((rowSize - L));
+    pos=$((ordZ - ordA + 1))
+    echo "new pos:$pos" >&2
   fi
   
   echo "c:$c, ord($c):$ordC, rowSize:$rowSize, pos:$pos" >&2
@@ -46,11 +54,6 @@ for (( i = 0; i < ${#T}; i++ )); do
 done
 
 echo "answers-keys:${!answers[@]}, answers-values:${answers[@]}" >&2
-echo "answers[0]:${answers[0]}" >&2
-echo "answers[1]:${answers[1]}" >&2
-echo "answers[2]:${answers[2]}" >&2
-echo "answers[3]:${answers[3]}" >&2
-echo "answers[4]:${answers[4]}" >&2
 
 for k in "${!answers[@]}"; do
   answer+="${answers[$k]}"$'\n'
@@ -58,4 +61,4 @@ done
 
 echo "answer:$answer" >&2
 
-echo $answer
+echo "$answer"
