@@ -1,4 +1,4 @@
-#!/usr/local/bin/bash
+#!/bin/bash
 
 declare -A types
 
@@ -7,13 +7,13 @@ read Q
 
 for (( i=0; i<N; i++ )); do
   read EXT MT
-  ext=$(echo $EXT | tr '[:upper:]' '[:lower:]')
-  types[$ext]=$MT
+  ext=${EXT,,}
+  [ ${types[$ext]-$ext} ] && types[$ext]=$MT
 done
 
 for (( i=0; i<Q; i++ )); do
   read FNAME
-  name=$(echo $FNAME | tr '[:upper:]' '[:lower:]')
-  [[ $name == *"."* ]] && type=${name##*.} || type=
-  echo ${types[$type]:-UNKNOWN}
+  name=${FNAME,,}
+  [[ $name == *"."* ]] && [[ $name != *"." ]] && type=${types[${name##*.}]-"UNKNOWN"} || type="UNKNOWN"
+  echo $type
 done
