@@ -1,5 +1,7 @@
 #!/bin/bash
 
+IFS=
+
 read L
 read H
 read T
@@ -16,10 +18,7 @@ declare -a rows
 declare -a answers
 
 for (( i = 0; i < H; i++ )); do
-  read ROW
-  if (( i == 0 )); then
-    ROW=" "$ROW
-  fi
+  read -r ROW
   echo "row:$ROW" >&2
   rows[$i]=$ROW
 done
@@ -42,7 +41,7 @@ for (( i = 0; i < ${#T}; i++ )); do
   echo "pos:$pos, rowSize=$rowSize" >&2
   
   if (( pos < 0 || pos > rowSize )); then
-    pos=$((ordZ - ordA + 1))
+    pos=$(((ordZ - ordA + 1) * L))
     echo "new pos:$pos" >&2
   fi
   
@@ -56,9 +55,14 @@ done
 echo "answers-keys:${!answers[@]}, answers-values:${answers[@]}" >&2
 
 for k in "${!answers[@]}"; do
+  echo "${answers[$k]}" >&2
+done
+
+for k in "${!answers[@]}"; do
   answer+="${answers[$k]}"$'\n'
 done
 
-echo "answer:$answer" >&2
+echo "answer:" >&2
+echo "$answer" >&2
 
 echo "$answer"
